@@ -1,8 +1,5 @@
 <template>
-    <div v-for="thread in threads" 
-         :key="thread.id" 
-         class="col-large push-top"
-    >
+    <div v-if="thread" class="col-large push-top">
         <h1>{{thread.title}}</h1>
         <div class="post-list">
             <div v-for="postId in thread.posts" 
@@ -30,16 +27,31 @@
             </div>     
         </div>
     </div>
+    <div v-else class="col-full text-center">
+        <h1>This thread does not exist</h1>
+        <router-link :to="{name:'Home'}">Read some cool threads</router-link>
+    </div>
 </template>
 
 <script>
 import sourceData from '@/data.json'
 export default {
+    props: {
+        id : {
+            required: true,
+            type: String
+        }
+    },
     data () {
         return {
             threads: sourceData.threads,
             posts: sourceData.posts,
             users: sourceData.users
+        }
+    },
+    computed: {
+        thread () {
+            return this.threads.find(thread => thread.id === this.id)
         }
     },
     methods: {
